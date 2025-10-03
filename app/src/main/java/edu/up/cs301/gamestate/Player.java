@@ -38,4 +38,15 @@ public class Player extends CardHolder{
     public boolean playerFolded(){  return folded;  }
     public int getPlayerID(){  return playerID;  }
 
+    @Override
+    public String toString() {
+        String output = "Player " + playerID + ": ";
+        output += "Dealer=" + isDealer + ", ";
+        output += "Exists=" + exists + ", ";
+        output += "Folded=" + folded + ", ";
+        output += "Hand=" + getHand();
+        return output;
+    }
+
+
 }

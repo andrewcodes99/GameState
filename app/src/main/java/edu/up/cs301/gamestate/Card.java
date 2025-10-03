@@ -66,4 +66,16 @@ public class Card {
     public void resetCard() {
         this.flipped = false;
     }
-}
+
+    @Override
+    public String toString() {
+            if (flipped) {
+                return getCardName() + " is face up and has a card ID of " + cardID;
+            }
+            else {
+                return getCardName() + " is face down and has a card ID of " + cardID;
+            }
+        }
+
+    }
+
