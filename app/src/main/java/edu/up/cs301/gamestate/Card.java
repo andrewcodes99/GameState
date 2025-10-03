@@ -11,7 +11,7 @@ package edu.up.cs301.gamestate;
 public class Card {
     private SUIT suit;
     private VALUE value;
-    private boolean dealt;
+    //private boolean dealt;
     private boolean flipped;
     private int cardID;
 
@@ -40,9 +40,6 @@ public class Card {
     public boolean isFlipped(){  return flipped;  }
 
     //could be changed to isDealt().
-    public boolean getDealt() {
-        return dealt;
-    }
 
     //https://stackoverflow.com/questions/6667243/using-enum-values-as-string-literals
     //could be useful when drawing bitmaps
