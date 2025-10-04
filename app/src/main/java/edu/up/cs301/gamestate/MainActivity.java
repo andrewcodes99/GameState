@@ -20,5 +20,6 @@ public class MainActivity extends AppCompatActivity {
         //should also eventually include which bots
         GameState game = new GameState(5);
 
+        game.setup(0);
     }
 }

@@ -17,12 +17,22 @@ public class Player extends CardHolder{
     private boolean exists;
     private boolean folded;
     private int playerID;
+    //in order to move onto the next round of betting
+    //every player needs to have bet the same amount, be
+    //folded, or have gone "all in"
+    //amountBet will be what we use to add chips to the pot.
+    private int amountBet;
+    private boolean isTurn;
+    private boolean allIn;
 
     public Player(int playerID){
         super(1000, 2);
         this.isDealer = false; //determines LB and BB
+        this.isTurn = false;
         this.exists = false;
         this.folded = false;
+        this.allIn = false;
+        this.amountBet = 0;
         this.playerID = playerID;
     }
 
@@ -30,12 +40,78 @@ public class Player extends CardHolder{
     //Does the player exist within the context of them game
     public void setExists(boolean exists){  this.exists = exists;  }
     public void setDealer(boolean isDealer){  this.isDealer = isDealer;  }
-    public void setFolded(boolean folded){  this.folded = folded;  }
+    public void setTurn(boolean turn){  this.isTurn = turn;  }
 
+    //will need to set players turn to true everytime we want to toggle any
+    //hand specific field (raise, fold, call, all-in). It's the least intuitive
+    //when we need to unfold folded players in between hands.
+    public boolean fold(boolean folded){
+        if (this.exists && isTurn && !allIn) {
+            this.folded = folded;
+            return true;
+        }
+        return false;
+    }
+
+    //will use the pass in model.callAmt
+    //pot will be updated using the sum of amount bets
+    //at the end of a betting action, all players should have
+    //bet the same amount, be folded, or be all in
+    public boolean call(int callAmt){
+        if (exists && isTurn && !folded) {
+            int bet = callAmt - amountBet;
+            //player has the money to call
+            if (bet <= getChipInventory()){
+                amountBet += bet;
+                this.updateChipInventory(-bet);
+            }
+            else {  return goAllIn();  } //player must go all in
+            return true;
+        }
+        return false;
+    }
+    public boolean raise(int callAmt, int minRaise, int raiseAmt){
+        if (exists && isTurn && !folded && minRaise <= raiseAmt) {
+            int bet = callAmt - amountBet + raiseAmt;
+            if (bet <= getChipInventory()){
+                amountBet += bet;
+                updateChipInventory(-bet);
+            }
+            else {  return goAllIn();  } //Not enough funds, go all in
+            return true;
+        }
+        return false;
+    }
+    public boolean goAllIn(){
+        if (exists && isTurn && !folded) {
+            allIn = true;
+            amountBet += this.getChipInventory();
+            this.updateChipInventory(-amountBet);
+            return true;
+        }
+        return false;
+    }
+    public boolean resetPlayers() {
+        //will handle toggling dealer in game loop
+        //should be performed after chips have been allocated to winners
+        //since this will toggle exists for any player with no chips
+        if (exists){
+            allIn = false;
+            folded = false;
+            isTurn = false;
+            amountBet = 0;
+            if (getChipInventory() == 0){  exists = false;  }
+            return true;
+        }
+        return false;
+    }
     //getters
     public boolean isDealer(){  return isDealer;  }
     public boolean playerExists(){  return exists;  }
     public boolean playerFolded(){  return folded;  }
     public int getPlayerID(){  return playerID;  }
+    public boolean isPlayerTurn(){  return isTurn;  }
+    public int getAmountBet(){  return amountBet;  }
+    public boolean allIn(){  return allIn;  }
 
 }

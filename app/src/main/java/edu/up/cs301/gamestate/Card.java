@@ -37,7 +37,9 @@ public class Card {
     }
 
     //getters
-    public boolean isFlipped(){  return flipped;  }
+    public boolean isFlipped() {
+        return flipped;
+    }
 
     //could be changed to isDealt().
 
@@ -59,11 +61,6 @@ public class Card {
     //should the face of this card be draw (flipped = true)
     //or the back?
     public void flipCard(boolean isFlipped) {
-        this.flipped = !isFlipped;
-    }
-
-    //will be used in the shuffle method
-    public void resetCard() {
-        this.flipped = false;
+        this.flipped = isFlipped;
     }
 }

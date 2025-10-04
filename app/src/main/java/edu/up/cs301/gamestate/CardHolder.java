@@ -48,7 +48,7 @@ public class CardHolder {
         }
     }
     public void updateChipInventory(int chipInventory){
-        this.chipInventory = chipInventory;
+        this.chipInventory += chipInventory;
     }
 }
 
