@@ -114,4 +114,15 @@ public class Player extends CardHolder{
     public int getAmountBet(){  return amountBet;  }
     public boolean allIn(){  return allIn;  }
 
+    @Override
+    public String toString() {
+        String output = "Player " + playerID + ": ";
+        output += "Dealer=" + isDealer + ", ";
+        output += "Exists=" + exists + ", ";
+        output += "Folded=" + folded + ", ";
+        output += "Hand=" + getHand();
+        return output;
+    }
+
+
 }

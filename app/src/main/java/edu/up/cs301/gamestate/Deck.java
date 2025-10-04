@@ -46,4 +46,13 @@ public class Deck {
         //remove card obj from deck
         deck.remove(deck.size() - 1);
     }
+
+    @Override
+    public String toString() {
+        String output = "Deck has " + deck.size() + " cards:\n";
+        for (Card c : deck) {
+            output += c.toString() + "\n";
+        }
+        return output;
+    }
 }
