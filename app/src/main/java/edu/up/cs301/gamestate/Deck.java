@@ -42,8 +42,8 @@ public class Deck {
     //returns cardID so that the card can be added to players hand
     public void dealCard(CardHolder recipient){
         //add card obj to players hand
-        recipient.setHand(deck.get(deckLen - 1));
+        recipient.setHand(deck.get(deck.size() - 1));
         //remove card obj from deck
-        deck.remove(deckLen - 1);
+        deck.remove(deck.size() - 1);
     }
 }

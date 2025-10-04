@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
         //this will need to depend on user selections
         //should also eventually include which bots
         GameState game = new GameState(5);
-
+        game.getPlayers().get(3).setDealer(true); //set dealer
         game.setup(0);
     }
 }

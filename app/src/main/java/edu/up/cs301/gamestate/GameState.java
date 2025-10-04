@@ -70,6 +70,7 @@ public class GameState {
     //  2) Could have a root_user and a secondary_user to enable
     //      network play
     public int dealAction() {
+
         for (int i = 0; i < MAX_PLAYERS; i++) {
             if (players.get(i).playerExists()) {
                 deck.dealCard(players.get(i));
@@ -81,10 +82,12 @@ public class GameState {
                 }
             }
         }
+
         //deal the river pre-flop
         for (int i = 0; i < 5; i++) {
             deck.dealCard(river);
         }
+
         //TODO: could make dealerID a model var to cut loop
         //little blind and big blind
         int dealerID = -1;
