@@ -1,5 +1,7 @@
 package edu.up.cs301.gamestate;
 
+import java.util.ArrayList;
+
 /**
  * @author Andrew, Alex
  *
@@ -116,13 +118,19 @@ public class Player extends CardHolder{
 
     @Override
     public String toString() {
-        String output = "Player " + playerID + ": ";
-        output += "Dealer=" + isDealer + ", ";
-        output += "Exists=" + exists + ", ";
-        output += "Folded=" + folded + ", ";
-        output += "Hand=" + getHand();
+        String output = "\nPlayer" + playerID + ": \n";
+        output += "Exists within the context of the game: " + exists + "\n";
+        output += "Has this many chips: " + getChipInventory() + "\n";
+        output += "After having bet: " + amountBet + " this hand\n";
+        output += "Is the dealer: " + isDealer + "\n";
+        output += "Has folded: " + folded + "\n";
+        output += "Is all-in: " + allIn + "\n";
+        output += "It is their turn: " + isTurn + "\n";
+        output += "Has these cards in their hand:\n";
+        ArrayList<Card> hand = getHand();
+        for (Card c : hand){
+            output += c.toString() + "\n";
+        }
         return output;
     }
-
-
 }

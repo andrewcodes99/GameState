@@ -54,10 +54,6 @@ public class GameState {
             players.get(3).setExists(true);
         }
 
-        //just wanted to make sure my code would work
-        //up to this point
-        deck.dealCard(players.get(0));
-
         //TODO: will probably want to move this and the getter to
         //  the view
         model = new Model();
@@ -129,12 +125,13 @@ public class GameState {
                     whoseTurn = (whoseTurn + 1) % MAX_PLAYERS;
                 } else {
                     players.get(whoseTurn).setTurn(true);
-                    players.get(whoseTurn).raise(model.callAmt, model.minRaise, BB_AMT);
+                    players.get(whoseTurn).raise(0, model.minRaise, BB_AMT);
                     model.callAmt = BB_AMT;
                     river.updateChipInventory(BB_AMT);
                     players.get(whoseTurn).setTurn(false);
                     blindCount++;
                     whoseTurn = (whoseTurn + 1) % MAX_PLAYERS;
+                    players.get(whoseTurn).setTurn(true); //test remove later
                 }
             }
             return whoseTurn;
@@ -209,5 +206,26 @@ public class GameState {
 
     public River getRiver() {
         return river;
+    }
+
+    public Model getModel(){
+        return model;
+    }
+
+    @Override
+    public String toString(){
+        String output = "";
+        output += "\nDeck: \n";
+        output += deck.toString() + "\n";
+
+        output += "Players: \n";
+        for (Player p : players){
+            output += p.toString();
+        }
+
+        output += "\nCommunity Cards: \n";
+        output += river.toString();
+
+        return output;
     }
 }

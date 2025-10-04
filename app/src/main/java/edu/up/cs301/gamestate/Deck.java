@@ -21,12 +21,11 @@ public class Deck {
 
     //https://stackoverflow.com/questions/1104975/a-for-loop-to-iterate-over-an-enum-in-java
     public Deck(){
-        //TODO: deck.size-1 might not be right
         deck = new ArrayList<>();
         //add a card for all 52 cards that exist within the deck
         for (Card.SUIT suit : Card.SUIT.values()) {
             for (Card.VALUE value : Card.VALUE.values()) {
-                deck.add(new Card(suit, value, false, deck.size()-1));
+                deck.add(new Card(suit, value, false, deck.size()));
             }
         }
         //sanity check
