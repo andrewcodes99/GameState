@@ -36,6 +36,14 @@ public class Card {
         this.cardID = cardID;
     }
 
+    //copy constructor for the Card class
+    public Card(Card other){
+        this.suit = other.suit;
+        this.value = other.value;
+        this.flipped = other.flipped;
+        this.cardID = other.cardID;
+    }
+
     //getters
     public boolean isFlipped(){  return flipped;  }
 

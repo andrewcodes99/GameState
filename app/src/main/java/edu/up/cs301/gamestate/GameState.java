@@ -55,6 +55,14 @@ public class GameState {
         deck.dealCard(players.get(0));
     }
 
+    //deep copy constructor for the GameState
+    public GameState(GameState other){
+        this.playerCount = other.playerCount;
+        this.deck = new Deck(other.deck);
+        this.river = new River(other.river);
+        this.players = new ArrayList<Player>(other.players);
+    }
+
     //getters
     public int getPlayerCount() {
         return playerCount;

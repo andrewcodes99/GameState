@@ -11,4 +11,7 @@ public class River extends CardHolder{
     public River(){
         super(0, 5);
     }
+
+    //copy constructor for the river
+    public River(River other){super(other);}
 }

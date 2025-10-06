@@ -26,6 +26,15 @@ public class Player extends CardHolder{
         this.playerID = playerID;
     }
 
+    //copy constructor for the Player class
+    public Player(Player other){
+        super(other);
+        this.isDealer = other.isDealer;
+        this.exists = other.exists;
+        this.folded = other.folded;
+        this.playerID = other.playerID;
+    }
+
     //setters
     //Does the player exist within the context of them game
     public void setExists(boolean exists){  this.exists = exists;  }

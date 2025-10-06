@@ -22,6 +22,13 @@ public class CardHolder {
         this.MAX_HAND_LENGTH = MAX_HAND_LENGTH;
     }
 
+    //copy constructor for the CardHolder class
+    public CardHolder(CardHolder other){
+        this.hand = other.hand;
+        this.chipInventory = other.chipInventory;
+        this.MAX_HAND_LENGTH = other.MAX_HAND_LENGTH;
+    }
+
     //getters
     public ArrayList<Card> getHand() {  return hand;  }
     public int getChipInventory() {  return chipInventory;  }

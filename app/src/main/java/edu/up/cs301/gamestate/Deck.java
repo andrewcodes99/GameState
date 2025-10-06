@@ -35,6 +35,16 @@ public class Deck {
         }
     }//constructor
 
+    //copy constructor for the Deck class
+    public Deck(Deck other){
+        this.deck = other.deck;
+        for (Card.SUIT suit : Card.SUIT.values()) {
+            for (Card.VALUE value : Card.VALUE.values()) {
+                deck.add(new Card(suit, value, false, deck.size()-1));
+            }
+        }
+    }
+
     public void shuffleDeck(){
         Collections.shuffle(deck);
     }
