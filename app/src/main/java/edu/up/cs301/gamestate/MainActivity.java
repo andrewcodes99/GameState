@@ -13,6 +13,13 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+/**
+ * @author
+ *
+ * @desc Handles initializing the UI, setting up the game,
+ * and connecting the button click to the game logic.
+ */
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -21,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
+       // UI components
         EditText editText = findViewById(R.id.editText);
         Button runTest = findViewById(R.id.runTest);
 
@@ -42,12 +50,12 @@ public class MainActivity extends AppCompatActivity {
                 //Expecting 52 cards, all face down.
                 //5 players existing within the context of the game, 1000 chips, and all else false
                 //A river with no chips or cards
-
+                //simulates setting up the game
                 model.output += "\n\nGame init: \n\n";
                 game.getPlayers().get(3).setDealer(true); //set dealer
                 game.setup(0);
                 model.output += game.toString();
-
+                //displays gamae info in edit text view
                 editText.setText(model.output);
             }
         });

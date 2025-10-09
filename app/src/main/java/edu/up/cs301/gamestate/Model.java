@@ -1,5 +1,14 @@
 package edu.up.cs301.gamestate;
 
+/**
+ * @author
+ *
+ * @desc Holds the core game data used during play.
+ * Tracks current betting information such as the total bet,
+ * call amount, and minimum raise value. Acts as the central
+ * data model for the controller to reference and update.
+ */
+
 public class Model {
     public int currentBet = 0;
     //call amt is a running total of what is required to

@@ -46,6 +46,14 @@ public class Deck {
         deck.remove(deck.size() - 1);
     }
 
+    /**
+     * @desc Returns a string representation of the current deck.
+     * Displays the number of cards remaining in the deck, followed
+     * by each card's details on a new line. Primarily used for
+     * debugging or verifying that the deck is initialized,
+     * shuffled, and dealt correctly.
+     */
+
     @Override
     public String toString() {
         String output = "Deck has " + deck.size() + " cards:\n";
