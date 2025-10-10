@@ -116,6 +116,13 @@ public class Player extends CardHolder{
     public int getAmountBet(){  return amountBet;  }
     public boolean allIn(){  return allIn;  }
 
+    /**
+     * @desc Returns a formatted string that displays the player's
+     * current status in the game. Includes whether the player exists,
+     * chip count, bet amount, dealer status, fold/all-in state,
+     * turn status, and the cards currently in their hand.
+     * Used mainly for debugging or displaying player info in the console.
+     */
     @Override
     public String toString() {
         String output = "\nPlayer" + playerID + ": \n";
