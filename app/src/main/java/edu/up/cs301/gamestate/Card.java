@@ -32,6 +32,7 @@ public class Card {
         this.flipped = flipped;
         this.cardID = cardID;
     }
+    //TODO: where card is field instead of isflipped
 
     //getters
     public boolean isFlipped() {

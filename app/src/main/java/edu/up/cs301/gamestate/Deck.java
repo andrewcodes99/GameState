@@ -16,7 +16,7 @@ import java.util.*;
  */
 public class Deck {
     private ArrayList<Card> deck;
-    private static final int deckLen = 52;
+    private static final int deckLen = 52; //TODO: suits * values
 
 
     //https://stackoverflow.com/questions/1104975/a-for-loop-to-iterate-over-an-enum-in-java
