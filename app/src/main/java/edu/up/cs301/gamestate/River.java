@@ -3,7 +3,7 @@ package edu.up.cs301.gamestate;
 import java.util.ArrayList;
 
 /**
- * @author Andrew
+ * @author Andrew, Alex, Nikos, Joseph
  *
  * @desc the river and a player are similar, but players require
  * more code and consideration. Rather than write similar classes

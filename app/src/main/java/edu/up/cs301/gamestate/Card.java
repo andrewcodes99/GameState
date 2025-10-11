@@ -1,7 +1,7 @@
 package edu.up.cs301.gamestate;
 
 /**
- * @author Andrew, Alex, Joseph
+ * @author Andrew, Alex, Nikos, Joseph
  *
  * @desc Creates a card object that will be used within the deck.
  *

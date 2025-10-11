@@ -1,7 +1,7 @@
 package edu.up.cs301.gamestate;
 
 /**
- * @author Andrew
+ * @author Andrew, Alex, Nikos, Joseph
  *
  * @desc Holds game data used during play.
  * Tracks current betting information. Will acts as the central

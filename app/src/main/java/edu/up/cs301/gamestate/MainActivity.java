@@ -14,7 +14,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 /**
- * @author
+ * @author Andrew, Alex, Nikos, Joseph
  *
  * @desc Handles initializing the UI, setting up the game,
  * and connecting the button click to the game logic.

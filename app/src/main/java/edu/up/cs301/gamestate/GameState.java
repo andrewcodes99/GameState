@@ -3,7 +3,7 @@ package edu.up.cs301.gamestate;
 import java.util.ArrayList;
 
 /**
- * @author Andrew, Joeseph
+ * @author Andrew, Alex, Nikos, Joseph
  *
  * @desc facilitates gameplay. We may want to create a hand class
  *

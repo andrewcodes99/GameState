@@ -3,7 +3,7 @@ package edu.up.cs301.gamestate;
 import java.util.ArrayList;
 
 /**
- * @author Andrew
+ * @author Andrew, Alex, Nikos, Joseph
  *
  * @desc A cardholder can be a player or the
  * river. Since the river has no chips to start and

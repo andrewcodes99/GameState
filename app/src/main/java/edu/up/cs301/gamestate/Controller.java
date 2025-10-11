@@ -5,7 +5,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 /**
- * @author ...
+ * @author Andrew, Alex, Nikos, Joseph
  *
  * @desc Acts as the controller in the MVC pattern.
  * Handles communication between the GameState (model)
