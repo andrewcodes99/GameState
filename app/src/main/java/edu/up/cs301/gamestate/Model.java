@@ -1,11 +1,10 @@
 package edu.up.cs301.gamestate;
 
 /**
- * @author
+ * @author Andrew
  *
- * @desc Holds the core game data used during play.
- * Tracks current betting information such as the total bet,
- * call amount, and minimum raise value. Acts as the central
+ * @desc Holds game data used during play.
+ * Tracks current betting information. Will acts as the central
  * data model for the controller to reference and update.
  */
 
@@ -25,5 +24,4 @@ public class Model {
 
     public String output = "";
 
-    public int chipsInCirc = 0;
 }

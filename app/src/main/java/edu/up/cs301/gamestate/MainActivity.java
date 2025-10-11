@@ -32,10 +32,6 @@ public class MainActivity extends AppCompatActivity {
         EditText editText = findViewById(R.id.editText);
         Button runTest = findViewById(R.id.runTest);
 
-        //this will need to depend on user selections
-        //should also eventually include which bots
-        
-
         runTest.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("SetTextI18n") //the error was annoying me
             @Override
@@ -135,11 +131,12 @@ public class MainActivity extends AppCompatActivity {
                 //create new instance of gamestate using default const
                 GameState thirdInstance = new GameState(5);
 
+                //check that second and third instances are equal
                 String second = secondInstance.toString();
                 String third = thirdInstance.toString();
-
                 model.output += "\n\nCopy Constructor test:\n" + second.equals(third);
 
+                //include second and third instances in output
                 model.output += "\n\nSecond Instance:\n";
                 model.output += second;
 

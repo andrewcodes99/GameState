@@ -6,19 +6,21 @@ import java.util.Random;
 import java.util.*;
 
 /**
- * @author Andrew, Alex
+ * @author Andrew, Alex, Nikos, Joseph
  *
  * @desc Creates a deck object (an array list of cards)
- * When a card is dealt, a card property will be toggled.
- * When the deck is shuffled, the dealt properties of the
- * cards will be set to false, allowing them to be selected
- * again.
+ * Cards are physically removed from the deck and placed into
+ * the players hand. Deck order is randomized for shuffling.
  */
 public class Deck {
     private ArrayList<Card> deck;
     private static final int deckLen = 52; //TODO: suits * values
 
-
+    /**
+     * Deck
+     *
+     * @desc the default constructor for the deck obj
+     */
     //https://stackoverflow.com/questions/1104975/a-for-loop-to-iterate-over-an-enum-in-java
     public Deck(){
         deck = new ArrayList<>();
@@ -35,20 +37,35 @@ public class Deck {
     }//constructor
 
 
-    //copy constructor for the Deck class
+    /**
+     * Deck (copy const)
+     *
+     * @desc deep copy constructor for the deck class. Used stack overflow
+     *      to copy array list.
+     *
+     * @param other the other deck object that we want to create the copy of
+     */
     //https://stackoverflow.com/questions/16328602/java-copy-constructor-arraylists
     public Deck(Deck other){
         this.deck = new ArrayList<Card>(other.deck.size());
+        //copys the cards in the order they are in within the passed in deck
         for (Card c : other.deck) {
             this.deck.add(new Card(c));
         }
     }
 
+    //not being used for gamestate submission
     public void shuffleDeck(){
         Collections.shuffle(deck);
     }
 
-    //returns cardID so that the card can be added to players hand
+    /**
+     * dealCard
+     * @desc adds the last card in the deck (assumed to be shuffled) to
+     *      the recipients hand and removes it from the deck.
+     *
+     * @param recipient which player (or the river) should receive the card
+     */
     public void dealCard(CardHolder recipient){
         //add card obj to players hand
         recipient.setHand(deck.get(deck.size() - 1));
@@ -57,11 +74,10 @@ public class Deck {
     }
 
     /**
+     * ToString
+     *
      * @desc Returns a string representation of the current deck.
-     * Displays the number of cards remaining in the deck, followed
-     * by each card's details on a new line. Primarily used for
-     * debugging or verifying that the deck is initialized,
-     * shuffled, and dealt correctly.
+     *
      */
 
     @Override

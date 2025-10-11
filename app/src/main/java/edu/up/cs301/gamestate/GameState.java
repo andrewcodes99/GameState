@@ -2,6 +2,18 @@ package edu.up.cs301.gamestate;
 
 import java.util.ArrayList;
 
+/**
+ * @author Andrew, Joeseph
+ *
+ * @desc facilitates gameplay. We may want to create a hand class
+ *
+ * TODO:
+ * 1) hand comps
+ * 2) chip allocation with side pots if players all-in
+ * 3) loop over players and listen for actions
+ * 4) toggle player exists when they run out of chips
+ *
+ */
 public class GameState {
     public static final int MAX_PLAYERS = 5;
     public static final int USER_PLAYER_ID = 3;
@@ -14,13 +26,16 @@ public class GameState {
     private Model model;
 
     /**
-     * @param playerCount DON'T USE THIS FOR LOOPING OVER THE PLAYERS
-     * @author Andrew
+     * GameState
+     *
      * @desc creates and sets up a game with x number
      * of players. Haven't decided which helper classes
      * we want to make. A hand class that executes gameplay might be useful
      * but we could also just write some methods within this one. For now,
      * I just wrote the methods.
+     *
+     * @param playerCount DON'T USE THIS FOR LOOPING OVER THE PLAYERS
+     *                    how many players exist within the context of the game?
      */
     public GameState(int playerCount) {
         this.playerCount = playerCount;
@@ -33,7 +48,7 @@ public class GameState {
 
         //toggle which players are playing
         //since the loop above creates the max number
-        //of players
+        //of players. This will be useful when drawing
         if (playerCount == 5) {
             for (int p = 0; p < playerCount; p++) {
                 players.get(p).setExists(true);
@@ -57,20 +72,22 @@ public class GameState {
         //TODO: will probably want to move this and the getter to
         //  the view
         model = new Model();
-        model.chipsInCirc = playerCount * Player.initChipCount;
     }
 
     //deep copy constructor for the GameState
     public GameState(GameState other){
         this.playerCount = other.playerCount;
+        //use other classes copy constructors
         this.deck = new Deck(other.deck);
         this.river = new River(other.river);
 
+        //use the player classes copy const for all players
         this.players = new ArrayList<Player>(other.players.size());
         for (Player p : other.players){
             this.players.add(new Player(p));
         }
 
+        //copy the model
         this.model = other.model;
     }
 
@@ -80,6 +97,15 @@ public class GameState {
     //      (different bitmaps draw based on the screen)
     //  2) Could have a root_user and a secondary_user to enable
     //      network play
+
+    /**
+     * dealAction
+     *
+     * @desc deals cards to the players and the river. Also
+     *      Also finds and returns the dealerID.
+     *
+     * @return dealerID to be used in setting the blinds
+     */
     public int dealAction() {
 
         for (int i = 0; i < MAX_PLAYERS; i++) {
@@ -119,12 +145,33 @@ public class GameState {
     //  to set the blinds for the gameState submission. Later, this wont be necessary.
     //  For clarity, it's called setup now. Will be called betLoop when bets arent
     //  hardcoded.
+
+    /**
+     * setup
+     *
+     * @desc for now, all this method is doing is setting blinds. It will eventually
+     *      be used as the bet loop.
+     *
+     * @param whichBet which betting round it is (as this will end up being the
+     *                 bet loop later)
+     *                 0: pre-flop
+     *                 1: flop
+     *                 2: turn
+     *                 3: river
+     *
+     * @return whose turn it will be after the blinds are set (for now)
+     */
     public int setup(int whichBet) {
-        int dealerID = dealAction();
+        int dealerID = dealAction(); //deal cards
+
+
         int whoseTurn = (dealerID + 1) % MAX_PLAYERS;
-        if (whichBet == 0) {//pre-flop blinds
+        //need to set the blinds in pre-flop betting
+        if (whichBet == 0) {
             int blindCount = 0;
             while (blindCount < 2) {
+                //loop until we find two players who exist. The first we find
+                //will be the little blind. The second will be the big blind.
                 if (!players.get(whoseTurn).playerExists()) {
                     whoseTurn = (whoseTurn + 1) % MAX_PLAYERS;
                 } else if (blindCount == 0) {
@@ -141,6 +188,7 @@ public class GameState {
             }
             return whoseTurn;
         }
+        //how I plan on extending this code later
         /**
          int count = 0;
          //now the same betting logic can be applied to all rounds
@@ -176,19 +224,12 @@ public class GameState {
     public boolean potRight(){
         for (int i = 0; i < MAX_PLAYERS; i++){
             Player p = players.get(i);
-            if (p.playerExists() && !p.playerFolded() && !p.allIn() &&
+            if (p.playerExists() && !p.playerFolded() && !(p.allIn()) &&
                     model.callAmt != p.getAmountBet()) {
                 return false; //if this is the case for any player, betting must continue
             }
         }
         return true;
-    }
-    public int getBets(){
-        int betTotal = 0;
-        for (int i = 0; i < MAX_PLAYERS; i++){
-            betTotal += players.get(i).getAmountBet();
-        }
-        return betTotal;
     }
 
     /**
@@ -204,9 +245,20 @@ public class GameState {
 
 
     //Poker action methods
+
+    /**
+     * fold
+     *
+     * @desc sets player field value to folded and toggles the players turn off.
+     *      Also, updates the players folded count.
+     *
+     * @param playerID int representation of player
+     *
+     * @return true if action successful
+     */
     public boolean fold(int playerID){
         Player p = players.get(playerID);
-        if (p.playerExists() && p.isPlayerTurn() && !p.allIn()) {
+        if (p.playerExists() && p.isPlayerTurn() && !(p.allIn())) {
             p.setFolded(true);
             p.setTurn(false);
             model.playersFolded++;
@@ -215,21 +267,27 @@ public class GameState {
         return false;
     }
 
-    //will use the pass in model.callAmt
-    //pot will be updated using the sum of amount bets
-    //at the end of a betting action, all players should have
-    //bet the same amount, be folded, or be all in
+    /**
+     * call
+     *
+     * @desc brings the players amountBet field up to the necessary amount.
+     *      updates the players chip inv, the pot inv, and toggles there turn.
+     *      If the player doesn't have enough money to call, they must go
+     *      all-in.
+     *
+     * @param playerID int representation of player
+     *
+     * @return true if action successful
+     */
     public boolean call(int playerID){
         Player p = players.get(playerID);
-        if (p.playerExists() && p.isPlayerTurn() && !p.allIn()) {
+        if (p.playerExists() && p.isPlayerTurn() && !(p.allIn())) {
             int bet = model.callAmt - p.getAmountBet();
             //player has the money to call
             if (bet <= p.getChipInventory()){
                 p.updateAmtBet(bet);
                 p.updateChipInventory(-bet);
                 river.updateChipInventory(bet);
-                System.out.println(playerID);
-                System.out.println(bet);
             }
             else {  return goAllIn(playerID);  } //player must go all in
             p.setTurn(false);
@@ -237,15 +295,32 @@ public class GameState {
         }
         return false;
     }
+
+    /**
+     * raise
+     *
+     * @desc takes the bet amount out of the players inventory and puts it in pot.
+     *      Also, a raise must be at least as much as the last raise (in each betting round),
+     *      so it checks that is the case before allowing the raise. A raise also raises the
+     *      minimum call amount for other players to remain in the hand.
+     *
+     * @param playerID int representation of player
+     * @param raiseAmt how much money the player wants to bet (on top of call)
+     *
+     * @return true if action successful
+     */
     public boolean raise(int playerID, int raiseAmt){
         Player p = players.get(playerID);
-        if (p.playerExists() && p.isPlayerTurn() && !p.allIn() && model.minRaise <= raiseAmt) {
+        if (p.playerExists() && p.isPlayerTurn() && !(p.allIn()) && model.minRaise <= raiseAmt) {
             int bet = model.callAmt - p.getAmountBet() + raiseAmt;
             if (bet <= p.getChipInventory()){
+                //update inventories
                 p.updateAmtBet(bet);
                 p.updateChipInventory(-bet);
                 river.updateChipInventory(bet);
+                //all players must now have bet this much to keep playing hand
                 model.callAmt = p.getAmountBet();
+                //raises must be at least this much for the rest of the hand
                 model.minRaise = raiseAmt;
             }
             else {  return goAllIn(playerID);  } //Not enough funds, go all in
@@ -254,18 +329,32 @@ public class GameState {
         }
         return false;
     }
+
+    /**
+     * goAllIn
+     *
+     * @desc updates minRaise, callAmt, and inventories when the player
+     *      puts all of their remaining chips on the line.
+     *
+     * @param playerID int representation of player
+     *
+     * @return true if action successful
+     */
     public boolean goAllIn(int playerID){
         Player p = players.get(playerID);
-        if (p.playerExists() && p.isPlayerTurn() && !p.allIn()) {
-            int bet = p.getChipInventory();
-            p.setAllIn(true);
+        if (p.playerExists() && p.isPlayerTurn() && !(p.allIn())) {
+            int bet = p.getChipInventory(); //player bets everything
+            p.setAllIn(true); //toggle player all in field
+            //update inventories
             p.updateAmtBet(bet);
             p.updateChipInventory(-bet);
             river.updateChipInventory(bet);
+            //calc raise amt and set min raise
             int raiseAmt = bet - model.callAmt + p.getAmountBet();
             if (model.minRaise <= raiseAmt){
                 model.minRaise = raiseAmt;
             }
+            //update call amt
             model.callAmt += bet;
             p.setTurn(false);
             return true;

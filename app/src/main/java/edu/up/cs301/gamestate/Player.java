@@ -3,7 +3,7 @@ package edu.up.cs301.gamestate;
 import java.util.ArrayList;
 
 /**
- * @author Andrew, Alex
+ * @author Andrew, Alex, Nikos, Joeseph
  *
  * @desc Creates a player object. Similar to
  * the river, it can hold cards and chips (the
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class Player extends CardHolder{
 
     public final static int initChipCount = 1000;
-    private boolean isDealer;
+    private boolean isDealer; //determines LB and BB
 
     //we will always have the max number of players created.
     //this is what tells us if the are actually playing.
@@ -24,11 +24,17 @@ public class Player extends CardHolder{
     //in order to move onto the next round of betting
     //every player needs to have bet the same amount, be
     //folded, or have gone "all in"
-    //amountBet will be what we use to add chips to the pot.
-    private int amountBet;
+    private int amountBet; //reset each hand
     private boolean isTurn;
     private boolean allIn;
 
+    /**
+     * Player
+     *
+     * @desc main constructor for the player class
+     *
+     * @param playerID int representation of player
+     */
     public Player(int playerID){
         super(initChipCount, 2);
         this.isDealer = false; //determines LB and BB
@@ -40,8 +46,8 @@ public class Player extends CardHolder{
         this.playerID = playerID;
     }
 
-    //TODO: this might be an issue
     //copy constructor for the Player class
+    //https://stackoverflow.com/questions/52762980/java-how-do-i-call-copy-constructor-for-subclass-of-subclass
     public Player(Player other){
         super(other);
         this.isDealer = other.isDealer;
@@ -85,11 +91,12 @@ public class Player extends CardHolder{
     public boolean allIn(){  return allIn;  }
 
     /**
+     * toString
+     *
      * @desc Returns a formatted string that displays the player's
-     * current status in the game. Includes whether the player exists,
-     * chip count, bet amount, dealer status, fold/all-in state,
-     * turn status, and the cards currently in their hand.
-     * Used mainly for debugging or displaying player info in the console.
+     * current status in the game.
+     *
+     * @return the resulting string
      */
     @Override
     public String toString() {

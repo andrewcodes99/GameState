@@ -1,7 +1,7 @@
 package edu.up.cs301.gamestate;
 
 /**
- * @author Andrew, Alex
+ * @author Andrew, Alex, Joseph
  *
  * @desc Creates a card object that will be used within the deck.
  *
@@ -9,9 +9,9 @@ package edu.up.cs301.gamestate;
 public class Card {
     private SUIT suit;
     private VALUE value;
+    //flipped = true means that the face of card should be drawn
     private boolean flipped;
     private int cardID;
-
 
     enum SUIT {
         HEARTS, DIAMONDS //shortened the deck for gamestate
@@ -21,10 +21,16 @@ public class Card {
         TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING, ACE
     }
 
-    //could've added an ownedBy property, but doing so
-    //would mean having to loop through 52 cards on top of everything
-    //else everytime the drawing is invalidated. Super slow. Make player
-    //have a hand.
+    /**
+     * Card
+     *
+     * @desc main card constructor
+     *
+     * @param suit suit of card
+     * @param value value of card
+     * @param flipped face of card should be drawn?
+     * @param cardID int representation of card
+     */
     public Card(SUIT suit, VALUE value, boolean flipped, int cardID) {
         this.suit = suit;
         this.value = value;
@@ -56,16 +62,17 @@ public class Card {
     }
 
     //setters
-    //make deal card return the card that invoked it. Will be
-    //necessary when we deal a card from the deck and want to
-    //place it in a players hand.
-
-    //should the face of this card be draw (flipped = true)
-    //or the back?
     public void flipCard(boolean isFlipped) {
         this.flipped = isFlipped;
     }
 
+    /**
+     * toString
+     *
+     * @desc override the toString method for card class
+     *
+     * @return the string representation of a card
+     */
     @Override
     public String toString() {
             if (flipped) {
@@ -75,6 +82,5 @@ public class Card {
                 return getCardName() + " is FACE DOWN and has a card ID of " + cardID;
             }
         }
-
     }
 
