@@ -14,7 +14,7 @@ public class Card {
 
 
     enum SUIT {
-        HEARTS, DIAMONDS //, CLUBS, SPADES
+        HEARTS, DIAMONDS //shortened the deck for gamestate
     }
 
     enum VALUE {
@@ -28,11 +28,17 @@ public class Card {
     public Card(SUIT suit, VALUE value, boolean flipped, int cardID) {
         this.suit = suit;
         this.value = value;
-        //this.dealt = dealt; TODO: since we are physically adding to hand
         this.flipped = flipped;
         this.cardID = cardID;
     }
-    //TODO: where card is field instead of isflipped
+
+    //copy constructor for the Card class
+    public Card(Card other){
+        this.suit = other.suit;
+        this.value = other.value;
+        this.flipped = other.flipped;
+        this.cardID = other.cardID;
+    }
 
     //getters
     public boolean isFlipped() {

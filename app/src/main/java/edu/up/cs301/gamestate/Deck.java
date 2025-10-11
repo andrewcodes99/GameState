@@ -34,6 +34,16 @@ public class Deck {
         }
     }//constructor
 
+
+    //copy constructor for the Deck class
+    //https://stackoverflow.com/questions/16328602/java-copy-constructor-arraylists
+    public Deck(Deck other){
+        this.deck = new ArrayList<Card>(other.deck.size());
+        for (Card c : other.deck) {
+            this.deck.add(new Card(c));
+        }
+    }
+
     public void shuffleDeck(){
         Collections.shuffle(deck);
     }

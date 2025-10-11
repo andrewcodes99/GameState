@@ -11,6 +11,8 @@ import java.util.ArrayList;
  * child of CardHolder and sibling to River.
  */
 public class Player extends CardHolder{
+
+    public final static int initChipCount = 1000;
     private boolean isDealer;
 
     //we will always have the max number of players created.
@@ -28,7 +30,7 @@ public class Player extends CardHolder{
     private boolean allIn;
 
     public Player(int playerID){
-        super(1000, 2);
+        super(initChipCount, 2);
         this.isDealer = false; //determines LB and BB
         this.isTurn = false;
         this.exists = false;
@@ -38,61 +40,27 @@ public class Player extends CardHolder{
         this.playerID = playerID;
     }
 
+    //TODO: this might be an issue
+    //copy constructor for the Player class
+    public Player(Player other){
+        super(other);
+        this.isDealer = other.isDealer;
+        this.isTurn = other.isTurn;
+        this.exists = other.exists;
+        this.folded = other.folded;
+        this.allIn = other.allIn;
+        this.amountBet = other.amountBet;
+        this.playerID = other.playerID;
+    }
+
     //setters
     //Does the player exist within the context of them game
     public void setExists(boolean exists){  this.exists = exists;  }
     public void setDealer(boolean isDealer){  this.isDealer = isDealer;  }
     public void setTurn(boolean turn){  this.isTurn = turn;  }
-
-    //will need to set players turn to true everytime we want to toggle any
-    //hand specific field (raise, fold, call, all-in). It's the least intuitive
-    //when we need to unfold folded players in between hands.
-    public boolean fold(boolean folded){
-        if (this.exists && isTurn && !allIn) {
-            this.folded = folded;
-            return true;
-        }
-        return false;
-    }
-
-    //will use the pass in model.callAmt
-    //pot will be updated using the sum of amount bets
-    //at the end of a betting action, all players should have
-    //bet the same amount, be folded, or be all in
-    public boolean call(int callAmt){
-        if (exists && isTurn && !folded) {
-            int bet = callAmt - amountBet;
-            //player has the money to call
-            if (bet <= getChipInventory()){
-                amountBet += bet;
-                this.updateChipInventory(-bet);
-            }
-            else {  return goAllIn();  } //player must go all in
-            return true;
-        }
-        return false;
-    }
-    public boolean raise(int callAmt, int minRaise, int raiseAmt){
-        if (exists && isTurn && !folded && minRaise <= raiseAmt) {
-            int bet = callAmt - amountBet + raiseAmt;
-            if (bet <= getChipInventory()){
-                amountBet += bet;
-                updateChipInventory(-bet);
-            }
-            else {  return goAllIn();  } //Not enough funds, go all in
-            return true;
-        }
-        return false;
-    }
-    public boolean goAllIn(){
-        if (exists && isTurn && !folded) {
-            allIn = true;
-            amountBet += this.getChipInventory();
-            this.updateChipInventory(-amountBet);
-            return true;
-        }
-        return false;
-    }
+    public void setFolded(boolean folded){  this.folded = folded;  }
+    public void updateAmtBet(int updateAmt){  amountBet += updateAmt;  }
+    public void setAllIn(boolean allIn){  this.allIn = allIn;  }
     public boolean resetPlayers() {
         //will handle toggling dealer in game loop
         //should be performed after chips have been allocated to winners

@@ -3,10 +3,10 @@ package edu.up.cs301.gamestate;
 import java.util.ArrayList;
 
 public class GameState {
-    public final int MAX_PLAYERS = 5;
-    public final int USER_PLAYER_ID = 3;
-    public final int LB_AMT = 5;
-    public final int BB_AMT = 10;
+    public static final int MAX_PLAYERS = 5;
+    public static final int USER_PLAYER_ID = 3;
+    public static final int LB_AMT = 5;
+    public static final int BB_AMT = 10;
     private Deck deck;
     private int playerCount;
     private ArrayList<Player> players;
@@ -57,6 +57,21 @@ public class GameState {
         //TODO: will probably want to move this and the getter to
         //  the view
         model = new Model();
+        model.chipsInCirc = playerCount * Player.initChipCount;
+    }
+
+    //deep copy constructor for the GameState
+    public GameState(GameState other){
+        this.playerCount = other.playerCount;
+        this.deck = new Deck(other.deck);
+        this.river = new River(other.river);
+
+        this.players = new ArrayList<Player>(other.players.size());
+        for (Player p : other.players){
+            this.players.add(new Player(p));
+        }
+
+        this.model = other.model;
     }
 
     //TODO: may want to deal 1 card to each player, then the 2nd
@@ -78,7 +93,6 @@ public class GameState {
                 }
             }
         }
-
         //deal the river pre-flop
         for (int i = 0; i < 5; i++) {
             deck.dealCard(river);
@@ -94,7 +108,6 @@ public class GameState {
         }
         return dealerID;
     }
-
 
     //Where which bet could refer to pre-flop, post-flop, post-turn, or post-river betting
     //(0, 1, 2, 3) pre-flop needs to set the blinds, it is the only one that differs
@@ -116,22 +129,14 @@ public class GameState {
                     whoseTurn = (whoseTurn + 1) % MAX_PLAYERS;
                 } else if (blindCount == 0) {
                     players.get(whoseTurn).setTurn(true);
-                    players.get(whoseTurn).raise(model.callAmt, model.minRaise, LB_AMT);
-                    model.callAmt = LB_AMT;
-                    model.minRaise = LB_AMT;
-                    river.updateChipInventory(LB_AMT);
-                    players.get(whoseTurn).setTurn(false);
+                    raise(whoseTurn, LB_AMT);
                     blindCount++;
                     whoseTurn = (whoseTurn + 1) % MAX_PLAYERS;
                 } else {
                     players.get(whoseTurn).setTurn(true);
-                    players.get(whoseTurn).raise(0, model.minRaise, BB_AMT);
-                    model.callAmt = BB_AMT;
-                    river.updateChipInventory(BB_AMT);
-                    players.get(whoseTurn).setTurn(false);
+                    raise(whoseTurn, BB_AMT-LB_AMT);
                     blindCount++;
                     whoseTurn = (whoseTurn + 1) % MAX_PLAYERS;
-                    players.get(whoseTurn).setTurn(true); //test remove later
                 }
             }
             return whoseTurn;
@@ -159,10 +164,6 @@ public class GameState {
         else return -1; //not fully functional yet
     }
 
-    public int calcCallAmt(int playerID){
-        return model.callAmt - players.get(playerID).getAmountBet();
-    }
-
     /**
      * Not being used yet, but will be used to check whether or
      * not we are ready to move onto the next part of the hand.
@@ -182,6 +183,13 @@ public class GameState {
         }
         return true;
     }
+    public int getBets(){
+        int betTotal = 0;
+        for (int i = 0; i < MAX_PLAYERS; i++){
+            betTotal += players.get(i).getAmountBet();
+        }
+        return betTotal;
+    }
 
     /**
      * playHand is not being used for GameState submission
@@ -193,6 +201,78 @@ public class GameState {
     public boolean playHand(){
         return true;
     }
+
+
+    //Poker action methods
+    public boolean fold(int playerID){
+        Player p = players.get(playerID);
+        if (p.playerExists() && p.isPlayerTurn() && !p.allIn()) {
+            p.setFolded(true);
+            p.setTurn(false);
+            model.playersFolded++;
+            return true;
+        }
+        return false;
+    }
+
+    //will use the pass in model.callAmt
+    //pot will be updated using the sum of amount bets
+    //at the end of a betting action, all players should have
+    //bet the same amount, be folded, or be all in
+    public boolean call(int playerID){
+        Player p = players.get(playerID);
+        if (p.playerExists() && p.isPlayerTurn() && !p.allIn()) {
+            int bet = model.callAmt - p.getAmountBet();
+            //player has the money to call
+            if (bet <= p.getChipInventory()){
+                p.updateAmtBet(bet);
+                p.updateChipInventory(-bet);
+                river.updateChipInventory(bet);
+                System.out.println(playerID);
+                System.out.println(bet);
+            }
+            else {  return goAllIn(playerID);  } //player must go all in
+            p.setTurn(false);
+            return true;
+        }
+        return false;
+    }
+    public boolean raise(int playerID, int raiseAmt){
+        Player p = players.get(playerID);
+        if (p.playerExists() && p.isPlayerTurn() && !p.allIn() && model.minRaise <= raiseAmt) {
+            int bet = model.callAmt - p.getAmountBet() + raiseAmt;
+            if (bet <= p.getChipInventory()){
+                p.updateAmtBet(bet);
+                p.updateChipInventory(-bet);
+                river.updateChipInventory(bet);
+                model.callAmt = p.getAmountBet();
+                model.minRaise = raiseAmt;
+            }
+            else {  return goAllIn(playerID);  } //Not enough funds, go all in
+            p.setTurn(false);
+            return true;
+        }
+        return false;
+    }
+    public boolean goAllIn(int playerID){
+        Player p = players.get(playerID);
+        if (p.playerExists() && p.isPlayerTurn() && !p.allIn()) {
+            int bet = p.getChipInventory();
+            p.setAllIn(true);
+            p.updateAmtBet(bet);
+            p.updateChipInventory(-bet);
+            river.updateChipInventory(bet);
+            int raiseAmt = bet - model.callAmt + p.getAmountBet();
+            if (model.minRaise <= raiseAmt){
+                model.minRaise = raiseAmt;
+            }
+            model.callAmt += bet;
+            p.setTurn(false);
+            return true;
+        }
+        return false;
+    }
+
 
     //getters
     public int getPlayerCount() {

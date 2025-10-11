@@ -14,6 +14,9 @@ public class River extends CardHolder{
         super(0, 5);
     }
 
+    //copy constructor for the river
+    public River(River other){  super(other);  }
+
     @Override
     public String toString(){
         String output = "";
